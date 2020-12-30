@@ -1,11 +1,12 @@
 # M5StickCPlusで、リアルタイム測定
+## 概要
 M5StickCをWifiのアクセスポイントにして、測定値をスマホで表示します。  
 実際に使っている様子は、以下の画像をクリックすると確認できます。(Youtubeに飛びます。)。  
 [![](http://img.youtube.com/vi/dR3Dypq_xo0/0.jpg)](http://www.youtube.com/watch?v=dR3Dypq_xo0 "")
 
 ## 機材
-[M5StickC Plus](https://www.switch-science.com/catalog/6470/) 
-[ToF Hat(VL53L0X搭載)](https://www.switch-science.com/catalog/6059/)  
+- [M5StickC Plus](https://www.switch-science.com/catalog/6470/)  
+- [ToF Hat(VL53L0X搭載)](https://www.switch-science.com/catalog/6059/)  
 
 ## 作成方法
 - Arduion IDEエディタをインストールする。
