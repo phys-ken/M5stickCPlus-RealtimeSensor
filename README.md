@@ -1,12 +1,14 @@
 # M5StickCPlusで、リアルタイム測定
 M5StickCをWifiのアクセスポイントにして、測定値をスマホで表示します。  
+実際に使っている様子は、こちら(Youtubeに飛びます。)。  
+[![](http://img.youtube.com/vi/dR3Dypq_xo0/0.jpg)](http://www.youtube.com/watch?v=dR3Dypq_xo0 "")
 
 ### 機材
-M5StickCPlus 
-ToF HAT  
+[M5StickC Plus](https://www.switch-science.com/catalog/6470/) 
+[ToF Hat(VL53L0X搭載)](https://www.switch-science.com/catalog/6059/)  
 
 
-### 作成方法Plus
+### 作成方法
 - Arduion IDEエディタをインストールする。
 - [こちらのサイト(英語)](https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/)を参考に、ライブラリをインストールする。
 - Arduino IDEのライブラリマネージャから、M5stickC Plus用のライブラリをインポートする。
@@ -15,16 +17,10 @@ ToF HAT
 
 
 ### 使い方
-必要なライブラリを読み込む。  
-※非同期処理に関するライブラリは、マネージャからはインストールできないので要注意。  
-.ino のファイルを、ESP32に書き込む  
-spiffに、dataの中のデータを書き込む
-
-
-
-wifiから、192.168.20.2にアクセス  
-　→windowに、indexと入力  
-　→windowにhtmlのファイル名を打てば、そのサイトに飛ぶ。  
+- スマートフォンのwifi接続画面から、M5stickCに接続する。
+- ブラウザから192.168.20.2にアクセス
+    - インプットボックスに、indexと入力すると、管理者ページが開けます。
+    - インプットボックスにxgなどと打つと、そのページに飛べます。  
 
 ### 参考にしたサイト
 - [ESP32/ESP8266 Plot Sensor Readings in Real Time Charts – Web Server](https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/)  

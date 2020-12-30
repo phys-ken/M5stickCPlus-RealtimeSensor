@@ -366,11 +366,13 @@ code {
     });
   </script>
 <h1 id="m5stickcplus%E3%81%A7%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%BF%E3%82%A4%E3%83%A0%E6%B8%AC%E5%AE%9A">M5StickCPlusで、リアルタイム測定</h1>
-<p>M5StickCをWifiのアクセスポイントにして、測定値をスマホで表示します。</p>
+<p>M5StickCをWifiのアクセスポイントにして、測定値をスマホで表示します。<br>
+実際に使っている様子は、こちら(Youtubeに飛びます。)。<br>
+<a href="http://www.youtube.com/watch?v=dR3Dypq_xo0"><img src="http://img.youtube.com/vi/dR3Dypq_xo0/0.jpg" alt=""></a></p>
 <h3 id="%E6%A9%9F%E6%9D%90">機材</h3>
-<p>M5StickCPlus
-ToF HAT</p>
-<h3 id="%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95plus">作成方法Plus</h3>
+<p><a href="https://www.switch-science.com/catalog/6470/">M5StickC Plus</a>
+<a href="https://www.switch-science.com/catalog/6059/">ToF Hat(VL53L0X搭載)</a></p>
+<h3 id="%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95">作成方法</h3>
 <ul>
 <li>Arduion IDEエディタをインストールする。</li>
 <li><a href="https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/">こちらのサイト(英語)</a>を参考に、ライブラリをインストールする。</li>
@@ -379,13 +381,15 @@ ToF HAT</p>
 <li>書き込めば、使えるようになります！</li>
 </ul>
 <h3 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h3>
-<p>必要なライブラリを読み込む。<br>
-※非同期処理に関するライブラリは、マネージャからはインストールできないので要注意。<br>
-.ino のファイルを、ESP32に書き込む<br>
-spiffに、dataの中のデータを書き込む</p>
-<p>wifiから、192.168.20.2にアクセス<br>
-　→windowに、indexと入力<br>
-　→windowにhtmlのファイル名を打てば、そのサイトに飛ぶ。</p>
+<ul>
+<li>スマートフォンのwifi接続画面から、M5stickCに接続する。</li>
+<li>ブラウザから192.168.20.2にアクセス
+<ul>
+<li>インプットボックスに、indexと入力すると、管理者ページが開けます。</li>
+<li>インプットボックスにxgなどと打つと、そのページに飛べます。</li>
+</ul>
+</li>
+</ul>
 <h3 id="%E5%8F%82%E8%80%83%E3%81%AB%E3%81%97%E3%81%9F%E3%82%B5%E3%82%A4%E3%83%88">参考にしたサイト</h3>
 <ul>
 <li><a href="https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/">ESP32/ESP8266 Plot Sensor Readings in Real Time Charts – Web Server</a><br>
