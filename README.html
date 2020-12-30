@@ -365,15 +365,19 @@ code {
           : 'default'
     });
   </script>
-<h1 id="m5stickc%E3%81%A7%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%BF%E3%82%A4%E3%83%A0%E6%B8%AC%E5%AE%9A">M5StickCで、リアルタイム測定</h1>
+<h1 id="m5stickcplus%E3%81%A7%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%BF%E3%82%A4%E3%83%A0%E6%B8%AC%E5%AE%9A">M5StickCPlusで、リアルタイム測定</h1>
 <p>M5StickCをWifiのアクセスポイントにして、測定値をスマホで表示します。</p>
 <h3 id="%E6%A9%9F%E6%9D%90">機材</h3>
-<p>M5StickC<br>
+<p>M5StickCPlus
 ToF HAT</p>
-<h3 id="arduino%E3%81%A7%E4%BD%9C%E6%88%90">Arduinoで作成</h3>
-<p>参考にしたサイト<br>
-ESP32の処理　https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/<br>
-グラフ描画機能の実装　https://www.youtube.com/watch?v=LJlKaTwtSdI&amp;t=31s</p>
+<h3 id="%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95plus">作成方法Plus</h3>
+<ul>
+<li>Arduion IDEエディタをインストールする。</li>
+<li><a href="https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/">こちらのサイト(英語)</a>を参考に、ライブラリをインストールする。</li>
+<li>Arduino IDEのライブラリマネージャから、M5stickC Plus用のライブラリをインポートする。</li>
+<li>Arduino IDEから、M5stickC Plusに書き込めるように、準備する。<a href="https://deviceplus.jp/hobby/entry_069/">こちらのサイト</a>等を参考に。</li>
+<li>書き込めば、使えるようになります！</li>
+</ul>
 <h3 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h3>
 <p>必要なライブラリを読み込む。<br>
 ※非同期処理に関するライブラリは、マネージャからはインストールできないので要注意。<br>
@@ -382,6 +386,13 @@ spiffに、dataの中のデータを書き込む</p>
 <p>wifiから、192.168.20.2にアクセス<br>
 　→windowに、indexと入力<br>
 　→windowにhtmlのファイル名を打てば、そのサイトに飛ぶ。</p>
+<h3 id="%E5%8F%82%E8%80%83%E3%81%AB%E3%81%97%E3%81%9F%E3%82%B5%E3%82%A4%E3%83%88">参考にしたサイト</h3>
+<ul>
+<li><a href="https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/">ESP32/ESP8266 Plot Sensor Readings in Real Time Charts – Web Server</a><br>
+　ネットワークまわりのコードで参考にしました。</li>
+<li><a href="https://www.youtube.com/watch?v=LJlKaTwtSdI">プログラミング講座 第13回【テトリスを作る(1)/JavaScript】</a><br>
+　htmlのCanvas機能の学習で使いました。グラフ描画のコードでは、かなり参考にしています。</li>
+</ul>
 
 </body>
 </html>
