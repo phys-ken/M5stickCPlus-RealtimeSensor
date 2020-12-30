@@ -1,0 +1,311 @@
+<!--//マイコン用、リアルタイムプロットシステム
+//2020/1/26(日)作成
+//tetro_y　に測定値を連続して代入することで、プロットできるはず。
+//測定値がフィールドの高さからはみ出すと、動作は一時停止。
+//測定値を、FIELD_ROW段階に丸める必要あり。-->
+
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body onload="draw()" link="white" vlink="white"><font size="6">
+  <h1>速度のグラフ</h1>
+  <p>速度　 <span id="RealtimeArea">mojimoji</span> cm/s </p>
+
+  <canvas id="can" style="border: solid 1px black;"></canvas></font>
+  <p>2020/2/16(Sun)</p>
+  <p>長倉作成</p>
+
+
+
+  <script>
+    /////////////////////////////////////////////////////graph用///////////////////////////////////////////////////////////////////
+    //まずは変数の定義
+    //フィールドサイズ(ポイントの個数で定義)
+    const FIELD_COL = 140; //幅
+    const FIELD_ROW = 140; //高さ
+    //ブロック一つのサイズ(ピクセル) 全体の縮尺に関係
+    const BLOCK_SIZE = 4;
+    //ブロックのみのサイズ。倍率
+    const BLOCK_times = 3;
+    //スクリーンサイズ
+    const SCREEN_W = BLOCK_SIZE * FIELD_COL; //ひとつぶん×いくつぶん (ピクセル)
+    const SCREEN_H = BLOCK_SIZE * FIELD_ROW;
+    //ポイントのサイズ
+    const TETRO_SIZE = 1; //絶対に変えない！
+    //ポイントの初期座標
+    let tetro_x = 3;
+    let tetro_y = FIELD_ROW / 2 - TETRO_SIZE; //中間から
+    //let tetro_y = FIELD_ROW  - TETRO_SIZE;    //左下から
+    //とりあえず計算用の変数
+    let tx2 = 0;
+    //描画間隔(ミリ秒)
+    const Anime_SPEED = 100;
+    //グラフ用キャンバスの描画
+    let can = document.getElementById("can");
+    let con = can.getContext("2d");
+    can.width = SCREEN_W;
+    can.height = SCREEN_H;
+    //フィールド本体
+    let field = [];
+    //フィールドのクリア
+    for (let y = 0; y < FIELD_ROW; y++) {
+      field[y] = [];
+      for (let x = 0; x < FIELD_COL; x++) {
+        field[y][x] = 0;
+      }
+    }
+    var slide = 1;
+var a = 0;
+var v0 = 0;
+    /////////////////////////////////////////////////////graph用　終わり////////////////////////////////////////////////////////////
+
+    var x1 = 0;
+    var x2 = 0;
+    var v = 0;
+    //配列の個数（速度の平均回数）
+    var vstp = 8;
+    //配列vvv定義と初期化
+    let vvv = [];
+    for (var i = 0; i < vstp; i++) {
+      vvv[i] = 0;
+    }
+
+
+
+    function draw() {
+      setInterval(move, Anime_SPEED);
+    }
+
+    function move() {
+      x1 = x2;//過去の値をv1に代入
+      if (1 * reqest() > 50) {
+        x2 = x2;//測定値が50センチ以上のときは、全快の値を採用
+      } else {
+        x2 = 1 * reqest();//そうじゃなければ、測定値を更新
+      }
+      v = (x2 - x1) / (Anime_SPEED / 1000);//速度を計算
+      //配列を1ステップ進める
+      for (var i = 0; i < vstp; i++) {
+        vvv[i + 1] = vvv[i];
+      }
+      //最新の値を配列に代入
+      vvv[0] = v;
+      //合計を計算し、平均を算出
+      var sum = 0;
+      for (var i = 0; i < vstp; i++) {
+        sum = sum + vvv[i];
+      }
+      var vplot = sum / vstp;
+      var a = ( v0 - vplot )  / (Anime_SPEED / 1000);
+
+      //////////////////////////////////////////////////////////////graph用///////////////////////////////////////////////
+      plotvalue = -1 * Math.floor(vplot); //整数に丸める
+      plotvalue = Math.floor(plotvalue); //整数に丸める
+      plotvalue = -(plotvalue); //0点合わせ　(必要に応じて)
+      document.getElementById("RealtimeArea").innerHTML = plotvalue; //数値を表示
+      //正負で色分けする
+      if (plotvalue >= 0) {
+        document.getElementById("RealtimeArea").style.color = "#3300FF";
+      } else {
+        document.getElementById("RealtimeArea").style.color = "#FF3300";
+      }
+      dropTetro(plotvalue); //plotvalueを渡す、plotvalueは、FIELD_COL/2プラスマイナスで投げること
+      /////////////////////////////////////////////////////graph用　終わり//////////////////////////////////////////
+    }
+
+    ////////////////////////////////////////////////////////////////////リクエストをマイコンに送る
+    function reqest() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+          //console.log(this.responseText);
+        }
+      };
+      xhttp.open("GET", "/temperature", true);
+      xhttp.send();
+      return y;
+    }
+    ////////////////////////////////////////////////////////////////リクエスト関数終わり
+
+
+
+    ///////////////////////////////////////////////////////graph用　貼り付けるのみ////////////////////////////////////////////////
+    //ポイントを描画する
+    function drawTetro() {
+      //con.clearRect(0,0,SCREEN_W,SCREEN_H);
+      let px = (tetro_x) * BLOCK_SIZE;
+      let py = (tetro_y) * BLOCK_SIZE;
+      con.fillStyle = "slateblue";
+      con.fillRect(px, py, BLOCK_SIZE * BLOCK_times, BLOCK_SIZE * BLOCK_times);
+      //  con.strokeStyle = "lime";
+      // con.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+    }
+
+    //フィールドの描画
+    function drawField() {
+      con.clearRect(0, 0, SCREEN_W, SCREEN_H);
+      var px0 = 0;
+      var py0 = 0  + SCREEN_H/2;
+      for (let x = 0; x < FIELD_COL; x++) {
+        for (let y = 0; y < FIELD_ROW; y++) {
+          if (field[y][x]) {
+            let px = x * BLOCK_SIZE;
+            let py = y * BLOCK_SIZE;
+            con.fillStyle = "slateblue";
+            con.fillRect(px, py, BLOCK_SIZE * BLOCK_times, BLOCK_SIZE * BLOCK_times);
+            //線を結ぶ(ラインが不要なら、この部分はコメントアウトする)
+            con.beginPath();
+            con.moveTo(px0 + BLOCK_SIZE * BLOCK_times / 2, py0 + BLOCK_SIZE * BLOCK_times / 2);
+            con.lineTo(px + BLOCK_SIZE * BLOCK_times / 2, py + BLOCK_SIZE * BLOCK_times / 2);
+            con.closePath();
+            con.stroke();
+            //過去の変数を代入
+            px0 = px;
+            py0 = py;
+          }
+        }
+      }
+    }
+
+    //ポイント描画とフィールド描画をまとめる
+    function drawAll() {
+      //drawFieldの中に、clearがある→この３つの関数の順番は大事！
+      drawField();
+      yajirusiyoko(); //横軸がいらない場合は、ここをコメントアウトすること！
+      yajirusitate();
+      drawTetro(); //もしかしたら、この行は不要かも？いつか確認する 2020.2.19記入
+    }
+
+    //ランダムな整数を戻す関数
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    //コマを進める
+    //tetro_x , tetro_y　が、座標を指定。
+    //tetro_xがフィールドの右端に到達すると、checkLine関数が画面スクロールを開始。
+    //tetro_xとtetro_yは、フィールド上では整数でのみ扱える。
+    //なので、Math.floorで整数に丸めた状態で、変数yを送信する。
+
+    //とりあえず古いまま残しておく。2020.2.11以降、droptetroには変数yを渡すことにしたため、中のmath.floorに意味はないはず
+    function dropTetro(y) {
+      if (tetro_x > FIELD_COL) {
+        tetro_x = tetro_x;
+        //tx2 = tx2 + 1; //tetro_xに関係なく、tx2はx座標を更新。//シミュレーションをこの中で使うときには使用。
+      } else {
+        tetro_x = tetro_x + slide;
+        //tx2 = tx2 + 1; //tetro_xに関係なく、tx2はx座標を更新
+      }
+      //入力されたyの値を、修正する。yは、±FIELD_ROW / 2の範囲内で入力
+      fix_y0 = FIELD_ROW / 2; //y切片
+      fix_y = -(y - fix_y0 + 1); //軸の上下を合わせる。
+      tetro_y = fix_y; //canvas用の値を、tetro_yに最終的に代入
+      //tetro_y = (FIELD_ROW / 8) * Math.sin(tx2 * 0.1) + (FIELD_ROW / 8) * Math.sin(tx2 * 0.085) + (FIELD_ROW / 2) - TETRO_SIZE; //うなり
+      //tetro_y = tetro_y + rand(-1, 1) ; //ランダムウォーク表示
+      //+ (FIELD_ROW / 2) - TETRO_SIZE;  //関数で表現するときはこちら
+      tetro_y = Math.floor(tetro_y); //整数に丸める
+
+      checkLine(tetro_x); //測定値が右端に到達したら、画面スクロールを始める
+      fixTetro(); //新しい点をField配列に格納する
+      drawAll(); //Field配列に従って、グラフを描画する
+    }
+
+
+    //ポイントを固定する
+    function fixTetro() {
+      field[tetro_y][tetro_x] = 1;
+    }
+
+    //みぎはしに到達したら、フィールドを右に進める
+    function checkLine(x) {
+      if (x > FIELD_COL) {
+        for (let y = 0; y < FIELD_ROW; y++) {
+          for (let x = 0; x < FIELD_COL + 5; x++) {
+            if (field[y][x] == 1) {
+              field[y][x - slide] = field[y][x];
+              field[y][x] = 0;
+            }
+
+          }
+        }
+      }
+    }
+
+
+
+
+    //横軸をかく(canvas-arrow.jsに接続)
+    function yajirusiyoko() {
+      var canvas = document.getElementById('can');
+      var context = canvas.getContext("2d");
+      context.beginPath();
+      //context.arrow(startX,startY,endX,endY,controlPoints);
+      context.arrow(0, FIELD_ROW * BLOCK_SIZE / 2, FIELD_COL * BLOCK_SIZE, FIELD_ROW * BLOCK_SIZE / 2, [0, 1, -10, 1, -10, 7]);
+      //context.arrow(0,FIELD_ROW * BLOCK_SIZE -10 , FIELD_COL * BLOCK_SIZE, FIELD_ROW * BLOCK_SIZE - 10 , [0, 2, -10, 2, -10, 7]); //正のみ
+      context.fillStyle = "black";
+      context.fill();
+
+    }
+
+    //縦軸をかく
+    function yajirusitate() {
+      var canvas = document.getElementById('can');
+      var context = canvas.getContext("2d");
+      context.beginPath();
+      //つかいかた　context.arrow(startX,startY,endX,endY,controlPoints);
+      context.arrow(10, FIELD_ROW * BLOCK_SIZE, 10, 0, [0, 1, -10, 1, -10, 7]);
+      context.fillStyle = "black";
+      context.fill();
+    }
+
+    //リクエストをマイコンに送る
+
+
+    //arrows　//詳しくはよくわからん
+    (function(target) {
+      if (!target || !target.prototype)
+        return;
+      target.prototype.arrow = function(startX, startY, endX, endY, controlPoints) {
+        var dx = endX - startX;
+        var dy = endY - startY;
+        var len = Math.sqrt(dx * dx + dy * dy);
+        var sin = dy / len;
+        var cos = dx / len;
+        var a = [];
+        a.push(0, 0);
+        for (var i = 0; i < controlPoints.length; i += 2) {
+          var x = controlPoints[i];
+          var y = controlPoints[i + 1];
+          a.push(x < 0 ? len + x : x, y);
+        }
+        a.push(len, 0);
+        for (var i = controlPoints.length; i > 0; i -= 2) {
+          var x = controlPoints[i - 2];
+          var y = controlPoints[i - 1];
+          a.push(x < 0 ? len + x : x, -y);
+        }
+        a.push(0, 0);
+        for (var i = 0; i < a.length; i += 2) {
+          var x = a[i] * cos - a[i + 1] * sin + startX;
+          var y = a[i] * sin + a[i + 1] * cos + startY;
+          if (i === 0) this.moveTo(x, y);
+          else this.lineTo(x, y);
+        }
+      };
+    })(CanvasRenderingContext2D);
+
+
+    ////////////////////////////////////////////////////////////graph用　終わり////////////////////////////////////////////////////////////
+  </script>
+
+
+
+</body>
+
+</html>

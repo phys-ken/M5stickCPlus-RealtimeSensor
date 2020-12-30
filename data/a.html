@@ -1,0 +1,106 @@
+<!--//マイコン用、リアルタイムプロットシステム
+//2020/1/26(日)作成
+//tetro_y　に測定値を連続して代入することで、プロットできるはず。
+//測定値がフィールドの高さからはみ出すと、動作は一時停止。
+//測定値を、FIELD_ROW段階に丸める必要あり。-->
+
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body onload="draw()" link="white" vlink="white">
+  <font size="6">
+    <p>加速度　 <span id="RealtimeArea">mojimoji</span> cm/s^2 </p>
+  </font>
+
+  <p>2020/11/23(Sun)</p>
+  <p>長倉作成</p>
+
+
+
+  <script>
+    var Anime_SPEED = 100;
+    var x1 = 0;
+    var x2 = 0;
+    var v = 0;
+    //配列の個数（速度の平均回数）
+    var vstp = 8;
+    //配列vvv定義と初期化
+    let vvv = [];
+    for (var i = 0; i < vstp; i++) {
+      vvv[i] = 0;
+    }
+    var vplot = 0;
+
+
+    function draw() {
+      setInterval(move, Anime_SPEED);
+    }
+
+    function move() {
+      x1 = x2;//過去の値をv1に代入
+      if (1 * reqest() > 50) {
+        x2 = x2;//測定値が50センチ以上のときは、全快の値を採用
+      } else {
+        x2 = 1 * reqest();//そうじゃなければ、測定値を更新
+      }
+      var v0 = vplot;
+      v = (x2 - x1) / (Anime_SPEED / 1000);//速度を計算
+      //配列を1ステップ進める
+      for (var i = 0; i < vstp; i++) {
+        vvv[i + 1] = vvv[i];
+      }
+      //最新の値を配列に代入
+      vvv[0] = v;
+      //合計を計算し、平均を算出
+      var sum = 0;
+      for (var i = 0; i < vstp; i++) {
+        sum = sum + vvv[i];
+      }
+      vplot = sum / vstp;
+
+      var a = (v0 - vplot) / (Anime_SPEED / 1000);
+
+      //////////////////////////////////////////////////////////////graph用///////////////////////////////////////////////
+      plotvalue = -1 * Math.floor(a); //整数に丸める
+      plotvalue = Math.floor(plotvalue); //整数に丸める
+      plotvalue = -(plotvalue); //0点合わせ　(必要に応じて)
+      document.getElementById("RealtimeArea").innerHTML = plotvalue; //数値を表示
+      //正負で色分けする
+      if (plotvalue >= 0) {
+        document.getElementById("RealtimeArea").style.color = "#3300FF";
+      } else {
+        document.getElementById("RealtimeArea").style.color = "#FF3300";
+      }
+      /////////////////////////////////////////////////////graph用　終わり//////////////////////////////////////////
+    }
+
+    ////////////////////////////////////////////////////////////////////リクエストをマイコンに送る
+    function reqest() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+          //console.log(this.responseText);
+        }
+      };
+      xhttp.open("GET", "/temperature", true);
+      xhttp.send();
+      return y;
+    }
+    ////////////////////////////////////////////////////////////////リクエスト関数終わり
+
+
+
+
+  </script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+
+  <canvas id="myChart"></canvas>
+
+
+ <script type="text/javascript" src="moment.js"></script>
+  <script type="text/javascript" src="Chart.js"></script>
+  <script type="text/javascript" src="chartjs-plugin-streaming.js"></script>
+  <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    a = 0;
+    rate = 0.01;
+
+
+
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          lineTension: 0,
+        }]
+      },
+      options: {
+
+        scales: {
+          xAxes: [{
+            type: 'realtime'
+          }],
+          yAxes: [{
+            display: true,
+            ticks: {
+              beginAtZero: true,
+              min: -1,
+              max: 1
+            }
+          }]
+
+
+        },
+        plugins: {
+          streaming: {
+            duration: 20000,
+            refresh: 100,
+            delay: 100,
+            frameRate: 30,
+            pause: false,
+
+
+            onRefresh: function (chart) {
+              chart.data.datasets[0].data.push({
+                x: Date.now(),
+                y: setVal()
+              });
+            }
+          }
+        }
+      }
+    });
+
+
+
+    setInterval(setVal(), rate);
+    a = 0;
+    function setVal() {
+      a = a + 1;
+      return Math.sin(a / 10) * Math.random() ;
+    }
+  </script>
+</body>
+
+</html>
