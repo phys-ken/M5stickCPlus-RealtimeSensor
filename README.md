@@ -24,10 +24,10 @@ M5StickCをWifiのアクセスポイントにして、測定値をスマホで�
     - インプットボックスにxgなどと打つと、そのページに飛べます。  
 
 ## 参考にしたサイト
-- [ESP32/ESP8266 Plot Sensor Readings in Real Time Charts – Web Server](https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/)  
-　ネットワークまわりのコードで参考にしました。
-- [プログラミング講座 第13回【テトリスを作る(1)/JavaScript】](https://www.youtube.com/watch?v=LJlKaTwtSdI)  
-　htmlのCanvas機能の学習で使いました。グラフ描画のコードでは、かなり参考にしています。  
+- [ESP32/ESP8266 Plot Sensor Readings in Real Time Charts – Web Server](https://randomnerdtutorials.com/esp32-esp8266-plot-chart-web-server/)
+    - ネットワークまわりのコードで参考にしました。
+- [プログラミング講座 第13回【テトリスを作る(1)/JavaScript】](https://www.youtube.com/watch?v=LJlKaTwtSdI)
+    - htmlのCanvas機能の学習で使いました。グラフ描画のコードでは、かなり参考にしています。  
   
 
 [meta1](https://phys-ken.github.io/M5stickCPlus-RealtimeSensor/README.html)  
